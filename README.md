@@ -39,7 +39,8 @@
     `
 #### 日志使用(见example下示例)
 
-    `
+    `//设置项目名称
+     log.SetProjectName("hello")
     //普通info日志
 	ZapLog.Info(context.Background(),"test")
 	//错误日志，打印错误栈信息

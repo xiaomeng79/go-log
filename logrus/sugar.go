@@ -14,6 +14,7 @@ func getCommonFileds(ctx context.Context,llog *Log) (*logrus.Entry){
 		"project": log.GetProjectName(ctx),
 		"trace_id":    log.GetTraceId(ctx),
 		"parent_id":    log.GetParentId(ctx),
+		"span_id":    log.GetSpanId(ctx),
 	})
 }
 

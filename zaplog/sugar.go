@@ -14,6 +14,7 @@ func getCommonFileds(ctx context.Context) ([]zap.Field){
 		zap.String("project", log.GetProjectName(ctx)),
 		zap.String("trace_id", log.GetTraceId(ctx)),
 		zap.String("parent_id", log.GetParentId(ctx)),
+		zap.String("span_id", log.GetSpanId(ctx)),
 	}
 }
 //字符串的列

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"github.com/xiaomeng79/go-utils/curl"
+	"github.com/xiaomeng79/go-log"
 )
 
 //初始化日志,可以再这里初始化不同日志引擎的日志 、、 zap logrous
@@ -20,6 +21,8 @@ var ZapLog = zaplog.New(
 )
 
 func ZapTest() {
+	//设置项目名称
+	log.SetProjectName("hello")
 	//普通info日志
 	ZapLog.Info(context.Background(),"test")
 	//错误日志，打印错误栈信息
