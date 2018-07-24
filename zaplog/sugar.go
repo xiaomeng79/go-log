@@ -5,16 +5,16 @@ import (
 	"go.uber.org/zap"
 	"github.com/xiaomeng79/go-utils/curl"
 	"fmt"
-	"github.com/xiaomeng79/go-log"
+	"github.com/xiaomeng79/go-log/tracer"
 )
 
 //公共的列
 func getCommonFileds(ctx context.Context) ([]zap.Field){
 	return []zap.Field{
-		zap.String("project", log.GetProjectName(ctx)),
-		zap.String("trace_id", log.GetTraceId(ctx)),
-		zap.String("parent_id", log.GetParentId(ctx)),
-		zap.String("span_id", log.GetSpanId(ctx)),
+		zap.String("project", tracer.GetProjectName(ctx)),
+		zap.String("trace_id", tracer.GetTraceId(ctx)),
+		zap.String("parent_id", tracer.GetParentId(ctx)),
+		zap.String("span_id", tracer.GetSpanId(ctx)),
 	}
 }
 //字符串的列

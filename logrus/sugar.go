@@ -5,16 +5,16 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/xiaomeng79/go-utils/curl"
 	"fmt"
-	"github.com/xiaomeng79/go-log"
+	"github.com/xiaomeng79/go-log/tracer"
 )
 
 //公共的列
 func getCommonFileds(ctx context.Context,llog *Log) (*logrus.Entry){
 	return llog.logger.WithFields(logrus.Fields{
-		"project": log.GetProjectName(ctx),
-		"trace_id":    log.GetTraceId(ctx),
-		"parent_id":    log.GetParentId(ctx),
-		"span_id":    log.GetSpanId(ctx),
+		"project": tracer.GetProjectName(ctx),
+		"trace_id":    tracer.GetTraceId(ctx),
+		"parent_id":    tracer.GetParentId(ctx),
+		"span_id":    tracer.GetSpanId(ctx),
 	})
 }
 
