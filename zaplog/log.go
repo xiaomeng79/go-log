@@ -64,7 +64,7 @@ func newZapLogger(level,stacktrace zapcore.Level, output zapcore.WriteSyncer) (*
 	encCfg.EncodeLevel = zapcore.LowercaseLevelEncoder
 	encoder = zapcore.NewJSONEncoder(encCfg)
 
-	return zap.New(zapcore.NewCore(encoder, output, dyn), zap.AddCaller(),zap.AddStacktrace(stacktrace),zap.AddCallerSkip(1))
+	return zap.New(zapcore.NewCore(encoder, output, dyn), zap.AddCaller(),zap.AddStacktrace(stacktrace),zap.AddCallerSkip(2))
 }
 
 
