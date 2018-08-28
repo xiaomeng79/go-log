@@ -2,15 +2,14 @@ package log
 
 import (
 	"context"
-	"github.com/xiaomeng79/go-log/zaplog"
 	"github.com/xiaomeng79/go-log/tracer"
 )
 
 //默认
-var l ILog = zaplog.New()
+var l ILog
 //设置
-func SetLogger(l ILog) {
-	l = l
+func SetLogger(ll ILog) {
+	l = ll
 }
 //设置项目名称
 func SetProjectName(s string) {
