@@ -11,7 +11,7 @@ type Options struct {
 	MaxSize int //日志分割的尺寸 MB
 	MaxAge int //分割日志保存的时间 day
 	Stacktrace zapcore.Level //记录堆栈的级别
-	IsStdOut bool //是否标准输出console输出
+	IsStdOut string //是否标准输出console输出
 }
 
 func WithLogPath(logpath string) Option {
@@ -50,7 +50,7 @@ func WithStacktrace(stacktrace zapcore.Level) Option {
 	}
 }
 
-func WithIsStdOut(isstdout bool) Option {
+func WithIsStdOut(isstdout string) Option {
 	return func(o *Options) {
 		o.IsStdOut = isstdout
 	}

@@ -25,13 +25,13 @@ func New(opts ...Option)  *Log {
 		MaxSize:100,
 		MaxAge:7,
 		Stacktrace:zapcore.ErrorLevel,
-		IsStdOut:true,
+		IsStdOut:"yes",
 	}
 	for _,opt := range opts {
 		opt(o)
 	}
 	writers := []zapcore.WriteSyncer{newRollingFile(o.LogPath,o.LogName,o.MaxSize,o.MaxAge)}
-	if o.IsStdOut {
+	if o.IsStdOut == "yes" {
 		writers = append(writers, os.Stdout)
 	}
 	logger := newZapLogger(o.LogLevel,o.Stacktrace, zapcore.NewMultiWriteSyncer(writers...))
