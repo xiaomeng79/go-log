@@ -1,80 +1,92 @@
 # go-log
 #### go封装的日志 logrus zap,并且增加了分布式日志追踪，日志格式化成json,日志大小切割
 
+#### 版本
+
+v1.0
+v2.0
 #### 获取
     `go get -u github.com/xiaomeng79/go-log`
    
 
-#### 使用
+#### 快速使用
 
 ```
-    //默认使用zap
-    //使用context包来分布式跟踪日志
-    Log.Info(context.Background(),"test")
+    //引入包
+    import "github.com/xiaomeng79/go-log"
+    //默认使用zap 插件
+    log.Info("test")
+    //使用context包来记录分布式跟踪日志
+    log.Info("test",context.Background())
 
-```    
+```
+#### 使用OpenTracing链路跟踪，通过context包记录跟踪的信息
+
+```
+只需要将带有链路信息的context放到日志方法的末尾即可，必须是最后一个参数
+如：
+不带格式化参数：   log.Info("test",context.Background())
+
+待格式化参数的：  log.Debugf("this is zap test %s","test",context.Background())
+
+```
+
+#### 自定义参数(默认)
+
+```
+	LogPath string = "/var/log" //日志保存路径
+	LogName string = "output" //日志保存的名称，不些随机生成
+	LogLevel string = "debug"  //日志记录级别
+	MaxSize int = 100 //日志分割的尺寸 MB
+	MaxAge int = 7 //分割日志保存的时间 day
+	Stacktrace string = "error" //记录堆栈的级别
+	IsStdOut string  = "yes"//是否标准输出console输出 yes 输出 no 不输出
+	ProjectName string = "test" //项目名称
+
+```
 #### 自定义，初始化zap,记录日志(推荐)
 
 
     `
-    func LogInit() {
-    	//设置日志里面记录的项目名称
-    	log.SetProjectName(config.Service)
     	//初始化zap
-    	l:= zaplog.New(
-    		zaplog.WithLogPath(config.Config.Log.Path),
-    		zaplog.WithLogName(config.ServiceType+"."+config.ServiceName),
-    		zaplog.WithMaxAge(config.Config.Log.MaxAge),
-    		zaplog.WithMaxSize(config.Config.Log.MaxSize),
-    		zaplog.WithIsStdOut(config.Config.Log.IsStdOut),
-    		)
-    	//设置日志引擎为刚初始化的
-    	log.SetLogger(l)
-    }
+    	//引入包
+    	import (
+        	"github.com/xiaomeng79/go-log/conf"
+        	"github.com/xiaomeng79/go-log/plugins/zaplog"
+        )
+        //初始化
+        SetLogger(zaplog.New(
+            conf.WithProjectName("zap test"),
+            conf.WithLogPath("tmp"),
+            conf.WithLogLevel("info"),
+            ))
+
+        //使用
+        log.Debugf("this is zap test %s","test",context.Background())
     
     `
-#### 快速开始，初始化logrous,记录日志(备选)
+#### 快速开始，初始化logrous,记录日志(其他插件自己拓展)
 
 
     `
-    //使用logrus,默认配置,也可自定义配置，同上
-    log.SetLogger(logrus.New())
-    //使用context包来分布式跟踪日志
-    Log.Info(context.Background(),"test")
+    	//初始化zap
+    	//引入包
+    	import (
+        	"github.com/xiaomeng79/go-log/conf"
+        	"github.com/xiaomeng79/go-log/plugins/logrus"
+        )
+        //初始化
+        SetLogger(logrus.New(
+            conf.WithProjectName("logrus test"),
+            ... 不写执行默认参数
+            ))
+
+        //使用
+        log.Debugf("this is logrus test %s","test",context.Background())
     `
   
-> 注意： 每个日志组件下的option文件都有配置项,每个日志都有默认配置
 
-#### 配置日志(参考example下的文件)
 
-    `
-    logger := zaplog.New(
-    	zaplog.WithLogPath("tmp/log/"),
-    	zaplog.WithLogName("test"),
-    	zaplog.WithMaxAge(7),
-    	zaplog.WithMaxSize(100),
-    	zaplog.WithIsStdOut(true),
-    )
-    `
-#### 日志使用(见example下示例)
-
-```  
-	//设置项目名称
-	LogInit()
-	//普通info日志
-	log.Info(context.Background(),"test")
-	//错误日志，打印错误栈信息
-	log.Error(context.Background(),"inside error")
-	//模拟新建一个错误日志类型,打印警告信息
-	err := errors.New("this is a test error")
-	log.WarnO(context.Background(),err,"inside error")
-	//模拟一个http请求,打印请求的一些信息,包括请求头，请求体，延迟，请求类型，方法，响应等
-	cb := &curl.CurlBuilder{}
-	c :=cb.SetMethod("GET").SetUrl("https://www.baidu.com/").SetHeader("Content-Type","application/json").Build()
-	//执行请求
-	c.Do()
-	log.InfoO(context.Background(),c,"请求百度")
-```
 
 
 

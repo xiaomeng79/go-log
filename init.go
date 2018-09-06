@@ -1,56 +1,53 @@
 package log
 
 import (
-	"context"
-	"github.com/xiaomeng79/go-log/tracer"
+	"github.com/xiaomeng79/go-log/plugins/zaplog"
 )
 
 //默认
-var l ILog
+var l ILog = zaplog.New()
 //设置
 func SetLogger(ll ILog) {
 	l = ll
 }
-//设置项目名称
-func SetProjectName(s string) {
-	tracer.SetProjectName(s)
-}
+
+
 
 //普通日志
-func Debug(ctx context.Context, s string){
-	l.Debug(ctx,s)
+func Debug(msg string, args ...interface{}){
+	l.Debug(msg, args...)
 }
-func Info(ctx context.Context, s string){
-	l.Info(ctx,s)
+func Info(msg string, args ...interface{}){
+	l.Info(msg, args...)
 }
-func Warn(ctx context.Context, s string){
-	l.Warn(ctx,s)
+func Warn(msg string, args ...interface{}){
+	l.Warn(msg, args...)
 }
-func Error(ctx context.Context, s string) {
-	l.Error(ctx,s)
+func Error(msg string, args ...interface{}) {
+	l.Error(msg, args...)
 }
-func Panic(ctx context.Context, s string) {
-	l.Panic(ctx,s)
+func Panic(msg string, args ...interface{}) {
+	l.Panic(msg, args...)
 }
-func Fatal(ctx context.Context, s string) {
-	l.Fatal(ctx,s)
+func Fatal(msg string, args ...interface{}) {
+	l.Fatal(msg, args...)
 }
 //其他日志 如：HTTP RPC日志
-func DebugO(ctx context.Context,other interface{},s string) {
-	l.DebugO(ctx,other,s)
+func Debugf(format string, args ...interface{}) {
+	l.Debugf(format,args...)
 }
-func InfoO(ctx context.Context,other interface{},s string) {
-	l.InfoO(ctx,other,s)
+func Infof(format string, args ...interface{}) {
+	l.Infof(format,args...)
 }
-func WarnO(ctx context.Context,other interface{},s string) {
-	l.WarnO(ctx,other,s)
+func Warnf(format string, args ...interface{}) {
+	l.Warnf(format,args...)
 }
-func ErrorO(ctx context.Context,other interface{},s string) {
-	l.ErrorO(ctx,other,s)
+func Errorf(format string, args ...interface{}) {
+	l.Errorf(format,args...)
 }
-func PanicO(ctx context.Context,other interface{},s string) {
-	l.PanicO(ctx,other,s)
+func Panicf(format string, args ...interface{}) {
+	l.Panicf(format,args...)
 }
-func FatalO(ctx context.Context,other interface{},s string) {
-	l.FatalO(ctx,other,s)
+func Fatalf(format string, args ...interface{}) {
+	l.Fatalf(format,args...)
 }
