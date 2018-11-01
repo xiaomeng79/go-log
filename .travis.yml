@@ -15,3 +15,6 @@ before_install:
 
 script:
   make test;
+
+after_success:
+- bash <(curl -s https://codecov.io/bash) -t c544fbb5-0f7f-4302-ae58-29914561b63d
