@@ -15,12 +15,15 @@ func TestSetLogger(t *testing.T) {
 		conf.WithProjectName("zap test"),
 		conf.WithLogPath("tmp"),
 		conf.WithLogLevel("info"),
-		))
+	))
 	Debug("this is zap")
-	Debug("hello",context.Background())
-	Infof("hello %s","world",context.Background())
-	l2 := logrus.New(conf.WithLogPath("tmp"),conf.WithLogName("logrus"),conf.WithProjectName("logrus test"))
+	Debug("hello", context.Background())
+	Infof("hello %s", "world", context.Background())
+	Infof("hello %s", "world")
+	Infof("hello %s,%d", "world", 2018, context.Background())
+	Errorf("hello %s,%d", "world", 2018)
+	l2 := logrus.New(conf.WithLogPath("tmp"), conf.WithLogName("logrus"), conf.WithProjectName("logrus test"))
 	SetLogger(l2)
-	Debugf("this is logrus %s","test",context.Background())
+	Debugf("this is logrus %s", "test", context.Background())
 	time.Sleep(time.Second * 5)
 }

@@ -15,7 +15,7 @@ type Log struct {
 
 //var Log *zap.Logger //全局日志
 
-func parseLevel(lvl string) (zapcore.Level) {
+func parseLevel(lvl string) zapcore.Level {
 	switch strings.ToLower(lvl) {
 	case "panic", "dpanic":
 		return zapcore.PanicLevel
@@ -35,31 +35,31 @@ func parseLevel(lvl string) (zapcore.Level) {
 }
 
 //创建日志
-func New(opts ...conf.Option)  *Log {
+func New(opts ...conf.Option) *Log {
 	o := &conf.Options{
-		LogPath:conf.LogPath,
-		LogName:conf.LogName,
-		LogLevel:conf.LogLevel,
-		MaxSize:conf.MaxSize,
-		MaxAge:conf.MaxAge,
-		Stacktrace:conf.Stacktrace,
-		IsStdOut:conf.IsStdOut,
-		ProjectName:conf.ProjectName,
+		LogPath:     conf.LogPath,
+		LogName:     conf.LogName,
+		LogLevel:    conf.LogLevel,
+		MaxSize:     conf.MaxSize,
+		MaxAge:      conf.MaxAge,
+		Stacktrace:  conf.Stacktrace,
+		IsStdOut:    conf.IsStdOut,
+		ProjectName: conf.ProjectName,
 	}
-	for _,opt := range opts {
+	for _, opt := range opts {
 		opt(o)
 	}
-	writers := []zapcore.WriteSyncer{fileout.NewRollingFile(o.LogPath,o.LogName,o.MaxSize,o.MaxAge)}
+	writers := []zapcore.WriteSyncer{fileout.NewRollingFile(o.LogPath, o.LogName, o.MaxSize, o.MaxAge)}
 	if o.IsStdOut == "yes" {
 		writers = append(writers, os.Stdout)
 	}
-	logger := newZapLogger(parseLevel(o.LogLevel),parseLevel(o.Stacktrace), zapcore.NewMultiWriteSyncer(writers...))
+	logger := newZapLogger(parseLevel(o.LogLevel), parseLevel(o.Stacktrace), zapcore.NewMultiWriteSyncer(writers...))
 	zap.RedirectStdLog(logger)
-	logger = logger.With(zap.String("project",o.ProjectName)) //加上项目名称
-	return &Log{logger:logger}
+	logger = logger.With(zap.String("project", o.ProjectName)) //加上项目名称
+	return &Log{logger: logger}
 }
 
-func newZapLogger(level,stacktrace zapcore.Level, output zapcore.WriteSyncer) (*zap.Logger) {
+func newZapLogger(level, stacktrace zapcore.Level, output zapcore.WriteSyncer) *zap.Logger {
 	encCfg := zapcore.EncoderConfig{
 		TimeKey:        "@timestamp",
 		LevelKey:       "level",
@@ -84,7 +84,5 @@ func newZapLogger(level,stacktrace zapcore.Level, output zapcore.WriteSyncer) (*
 	encCfg.EncodeLevel = zapcore.LowercaseLevelEncoder
 	encoder = zapcore.NewJSONEncoder(encCfg)
 
-	return zap.New(zapcore.NewCore(encoder, output, dyn), zap.AddCaller(),zap.AddStacktrace(stacktrace),zap.AddCallerSkip(2))
+	return zap.New(zapcore.NewCore(encoder, output, dyn), zap.AddCaller(), zap.AddStacktrace(stacktrace), zap.AddCallerSkip(2))
 }
-
-

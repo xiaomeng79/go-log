@@ -18,5 +18,3 @@ type ILog interface {
 	Panicf(string, ...interface{})
 	Fatalf(string, ...interface{})
 }
-
-

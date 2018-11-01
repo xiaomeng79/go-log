@@ -2,3 +2,4 @@ example/tmp
 /tmp
 /.idea
 /vendor
+coverage.txt

@@ -16,16 +16,15 @@ type WriteSyncer interface {
 }
 
 //创建分割日志的writer
-func NewRollingFile(path,srvname string,maxSize,MaxAge int) WriteSyncer {
+func NewRollingFile(path, srvname string, maxSize, MaxAge int) WriteSyncer {
 	if err := os.MkdirAll(path, 0766); err != nil {
 		panic(err)
-		return nil
 	}
 
 	return newLumberjackWriteSyncer(&lumberjack.Logger{
-		Filename:  filepath.Join(path,srvname + ".log"),
+		Filename:  filepath.Join(path, srvname+".log"),
 		MaxSize:   maxSize, //megabytes
-		MaxAge:    MaxAge,   //days
+		MaxAge:    MaxAge,  //days
 		LocalTime: true,
 		Compress:  false,
 	})
