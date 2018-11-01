@@ -1,5 +1,6 @@
 # go-log
-[![Build Status](https://travis-ci.org/xiaomeng79/go-log.svg?branch=master)](https://travis-ci.org/xiaomeng79/go-log)
+[![Build Status](https://travis-ci.org/xiaomeng79/go-log.svg?branch=master)](https://travis-ci.org/xiaomeng79/go-log) [![codecov](https://codecov.io/gh/xiaomeng79/go-log/branch/master/graph/badge.svg)](https://codecov.io/gh/xiaomeng79/go-log)
+
 #### go封装的日志 logrus zap,并且增加了分布式日志追踪，日志格式化成json,日志大小切割
 
 #### 版本
