@@ -18,7 +18,9 @@ func TestSetLogger(t *testing.T) {
 	))
 	Debug("this is zap")
 	Debug("hello", context.Background())
-	Infof("hello %s", "world", context.Background())
+	//自定义跟踪信息
+	ctx := context.WithValue(context.Background(),"log_trace","46b1506e7332f7c1:7f75737aa70629cc:3bb947500f42ad71:1")
+	Infof("hello %s", "world", ctx)
 	Infof("hello %s", "world")
 	Infof("hello %s,%d", "world", 2018, context.Background())
 	Errorf("hello %s,%d", "world", 2018)

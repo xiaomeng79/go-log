@@ -29,6 +29,12 @@ v2.0
 #### 使用OpenTracing链路跟踪，通过context包记录跟踪的信息
 
 ```
+如果需要自定义跟踪信息,格式如下:
+格式 traceid:spanid:parentid  46b1506e7332f7c1:7f75737aa70629cc:3bb947500f42ad71:1
+
+ctx := context.WithValue(ctx,"log_trace","46b1506e7332f7c1:7f75737aa70629cc:3bb947500f42ad71:1")
+
+
 只需要将带有链路信息的context放到日志方法的末尾即可，必须是最后一个参数
 如：
 不带格式化参数：   log.Info("test",context.Background())
