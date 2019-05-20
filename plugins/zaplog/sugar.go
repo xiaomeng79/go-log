@@ -12,11 +12,7 @@ func getCtxFileds(args ...interface{}) []zap.Field {
 	//判断是否有context
 	if len(args) > 0 {
 		if ctx, ok := args[len(args)-1].(context.Context); ok {
-			return []zap.Field{
-				zap.String("trace_id", tracer.GetTraceId(ctx)),
-				zap.String("parent_id", tracer.GetParentId(ctx)),
-				zap.String("span_id", tracer.GetSpanId(ctx)),
-			}
+			return getTraceField(ctx)
 		}
 	}
 	return []zap.Field{}
@@ -50,11 +46,7 @@ func getOtherFileds(format string, args ...interface{}) (string, []zap.Field) {
 	l := len(args)
 	if l > 0 {
 		if ctx, ok := args[l-1].(context.Context); ok {
-			return fmt.Sprintf(format, args[:l-1]...), []zap.Field{
-				zap.String("trace_id", tracer.GetTraceId(ctx)),
-				zap.String("parent_id", tracer.GetParentId(ctx)),
-				zap.String("span_id", tracer.GetSpanId(ctx)),
-			}
+			return fmt.Sprintf(format, args[:l-1]...), getTraceField(ctx)
 		} else {
 			return fmt.Sprintf(format, args[:l]...), []zap.Field{}
 		}
@@ -90,4 +82,14 @@ func (l *Log) Panicf(format string, args ...interface{}) {
 func (l *Log) Fatalf(format string, args ...interface{}) {
 	s, f := getOtherFileds(format, args...)
 	l.logger.Fatal(s, f...)
+}
+
+// 获取链路跟踪添加列
+func getTraceField(ctx context.Context) []zap.Field {
+	fm := tracer.GetTraceInfo(ctx)
+	zf := make([]zap.Field,0)
+	for k,v := range fm {
+		zf = append(zf,zap.String(k,v))
+	}
+	return zf
 }

@@ -9,6 +9,10 @@ import (
 	"os"
 )
 
+const (
+	ProjectName = "project"
+)
+
 type Log struct {
 	logger      *logrus.Logger
 	ProjectName string

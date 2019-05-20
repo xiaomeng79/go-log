@@ -7,20 +7,18 @@ import (
 	"github.com/xiaomeng79/go-log/tracer"
 )
 
+
 func getCtxFileds(llog *Log, args ...interface{}) *logrus.Entry {
 	//判断是否有context
 	l := len(args)
 	if l > 0 {
 		if ctx, ok := args[l-1].(context.Context); ok {
-			return llog.logger.WithFields(logrus.Fields{
-				"trace_id":  tracer.GetTraceId(ctx),
-				"parent_id": tracer.GetParentId(ctx),
-				"span_id":   tracer.GetSpanId(ctx),
-				"project":   llog.ProjectName,
-			})
+			lf := getTraceField(ctx)
+			lf[ProjectName] = llog.ProjectName
+			return llog.logger.WithFields(lf)
 		}
 	}
-	return llog.logger.WithField("project", llog.ProjectName)
+	return llog.logger.WithField(ProjectName, llog.ProjectName)
 }
 
 //字符串--start
@@ -54,19 +52,16 @@ func getOtherFileds(llog *Log, format string, args ...interface{}) (string, *log
 	l := len(args)
 	if l > 0 {
 		if ctx, ok := args[l-1].(context.Context); ok {
-			return fmt.Sprintf(format, args[:l-1]...), llog.logger.WithFields(logrus.Fields{
-				"trace_id":  tracer.GetTraceId(ctx),
-				"parent_id": tracer.GetParentId(ctx),
-				"span_id":   tracer.GetSpanId(ctx),
-				"project":   llog.ProjectName,
-			})
+			lf := getTraceField(ctx)
+			lf[ProjectName] = llog.ProjectName
+			return fmt.Sprintf(format, args[:l-1]...), llog.logger.WithFields(lf)
 		} else {
 			return fmt.Sprintf(format, args[:l]...), llog.logger.WithFields(logrus.Fields{
-				"project": llog.ProjectName,
+				ProjectName: llog.ProjectName,
 			})
 		}
 	}
-	return format, llog.logger.WithField("project", llog.ProjectName)
+	return format, llog.logger.WithField(ProjectName, llog.ProjectName)
 }
 
 func (l *Log) Debugf(format string, args ...interface{}) {
@@ -92,4 +87,14 @@ func (l *Log) Panicf(format string, args ...interface{}) {
 func (l *Log) Fatalf(format string, args ...interface{}) {
 	s, entry := getOtherFileds(l, format, args...)
 	entry.Fatal(s)
+}
+
+// 获取链路跟踪添加列
+func getTraceField(ctx context.Context) logrus.Fields {
+	fm := tracer.GetTraceInfo(ctx)
+	zf := make(logrus.Fields,0)
+	for k,v := range fm {
+		zf[k] = v
+	}
+	return zf
 }
