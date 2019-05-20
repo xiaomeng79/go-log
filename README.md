@@ -11,7 +11,11 @@ v2.0
     `go get -u github.com/xiaomeng79/go-log`
    
 
-#### 快速使用
+### 快速使用
+
+#### 使用opentracing定义链路跟踪信息
+
+[opentracing-go](https://github.com/opentracing/opentracing-go)
 
 ```
     //引入包
@@ -22,24 +26,29 @@ v2.0
     //输出日志:{"level":"info","@timestamp":"2018-11-01T15:04:47.079+0800","caller":"go-log/log_test.go:21","msg":"test","project":"zap test"}
     
     //使用context包来记录分布式跟踪日志,配合OpenTracing链路跟踪实现代码分析
-    log.Info("test",context.Background())
+    // 使用链路跟踪
+    sp := opentracing.StartSpan("operation_name")
+    defer sp.Finish()
+    ctx := opentracing.ContextWithSpan(context.Background(), sp)
+    // 使用ctx来将跟踪信息记录到日志
+    log.Info("test",ctx)
     //输出日志:{"level":"info","@timestamp":"2018-11-01T15:04:47.079+0800","caller":"go-log/log_test.go:21","msg":"hello world","project":"zap test","trace_id":"3ece70e8f602a46d","parent_id":"5e57855e4f15604c","span_id":"791c3d0180bb66ad"}
 
 ```
-#### 使用OpenTracing链路跟踪，通过context包记录跟踪的信息
+#### 兼容istio链路跟踪，通过context包记录跟踪的信息
 
 ```
-如果需要自定义跟踪信息,格式如下:
-格式 traceid:spanid:parentid  46b1506e7332f7c1:7f75737aa70629cc:3bb947500f42ad71:1
+如果需要自定义跟踪信息,格式如下(将istio的请求头中的X-B3-的跟踪信息取出来,拼成以下格式):
+格式 traceid:spanid:parentid:1  46b1506e7332f7c1:7f75737aa70629cc:3bb947500f42ad71:1
 
 ctx := context.WithValue(ctx,tracer.LogTraceKey,"46b1506e7332f7c1:7f75737aa70629cc:3bb947500f42ad71:1")
 
 
 只需要将带有链路信息的context放到日志方法的末尾即可，必须是最后一个参数
 如：
-不带格式化参数：   log.Info("test",context.Background())
+不带格式化参数：   log.Info("test",ctx)
 
-待格式化参数的：  log.Debugf("this is zap test %s","test",context.Background())
+待格式化参数的：  log.Debugf("this is zap test %s","test",ctx)
 
 ```
 
@@ -74,7 +83,7 @@ ctx := context.WithValue(ctx,tracer.LogTraceKey,"46b1506e7332f7c1:7f75737aa70629
             ))
 
         //使用
-        log.Debugf("this is zap test %s","test",context.Background())
+        log.Debugf("this is zap test %s","test",ctx)
     
     `
 #### 快速开始，初始化logrous,记录日志(其他插件自己拓展)
@@ -94,7 +103,7 @@ ctx := context.WithValue(ctx,tracer.LogTraceKey,"46b1506e7332f7c1:7f75737aa70629
             ))
 
         //使用
-        log.Debugf("this is logrus test %s","test",context.Background())
+        log.Debugf("this is logrus test %s","test",ctx)
     `
   
 
